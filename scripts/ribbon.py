@@ -584,17 +584,17 @@ def CreateRibbon():
     actionOpen = fileMenu.addAction("Open")
     actionOpen.triggered.connect(OnOpenFile)
     #
-    actionClose = fileMenu.addAction("Save")
-    #actionClose.triggered.connect(OnTclCmd)
+    actionSave = fileMenu.addAction("Save")
+    actionSave.triggered.connect(OnSaveFile)
     #
-    actionClose = fileMenu.addAction("Import")
-    #actionClose.triggered.connect(OnTclCmd)
+    actionImport = fileMenu.addAction("Import")
+    actionImport.triggered.connect(OnImportFile)
     #
-    actionClose = fileMenu.addAction("Export")
-    #actionClose.triggered.connect(OnTclCmd)
+    actionExport = fileMenu.addAction("Export")
+    actionExport.triggered.connect(OnExportFile)
     #
-    actionClose = fileMenu.addAction("Export")
-    #actionClose.triggered.connect(OnTclCmd)
+    actionClose = fileMenu.addAction("Close")
+    actionClose.triggered.connect(OnCloseFile)
     #--
 
     qbtn_file.setMenu(fileMenu)
