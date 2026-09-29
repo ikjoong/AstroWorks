@@ -34,6 +34,16 @@ def OnTclCmd():
     source C:/AstroWorks/examples/animation.tcl
     ''')
 
+def OnTopTabCmd():
+    interp.eval_tcl('''
+    tk_messageBox -message "Add new command on Tab-bar"
+    ''')
+
+def OnRibbonBarCmd():
+    interp.eval_tcl('''
+    tk_messageBox -message "Add new command on Ribbon-bar"
+    ''')
+
 def Restart():
     interp.eval_tcl('*restart')
 
@@ -615,7 +625,17 @@ def CreateRibbon():
     qbutton.setText("Quick Button")
     ribbonBar.addQuickAccessButton(qbutton)
     qbutton.setToolTip("Button 시험")  
-    qbutton.clicked.connect(OnTclCmd)  
+    qbutton.clicked.connect(OnTclCmd)
+
+    # Quick Button 옆 배경(타이틀 줄) Ctrl+우클릭 -> OnTopTabCmd 실행
+    # tabBar 의 부모가 Quick Access 툴바와 탭이 들어 있는 타이틀 줄 전체다
+    def OnTitleRowContextMenu(pos):
+        if QApplication.keyboardModifiers() & Qt.ControlModifier:
+            OnTopTabCmd()
+
+    titleRow = ribbonBar.tabBar().parentWidget()
+    titleRow.setContextMenuPolicy(Qt.CustomContextMenu)
+    titleRow.customContextMenuRequested.connect(OnTitleRowContextMenu)
 
     # HERE end
 
@@ -705,6 +725,16 @@ def CreateRibbon():
     b.clicked.connect(OnToggleCopilot)  # type: ignore
     b.setIconSize(QSize(16, 16))
     b.setMaximumIconSize(32)
+
+    # Copilot 버튼이 있는 줄(카테고리 패널 영역) Ctrl+우클릭 -> OnRibbonBarCmd 실행
+    # 카테고리의 부모가 모든 카테고리(File1, View)를 담는 패널 줄 전체다
+    def OnPanelRowContextMenu(pos):
+        if QApplication.keyboardModifiers() & Qt.ControlModifier:
+            OnRibbonBarCmd()
+
+    panelRow = viewCategory.parentWidget()
+    panelRow.setContextMenuPolicy(Qt.CustomContextMenu)
+    panelRow.customContextMenuRequested.connect(OnPanelRowContextMenu)
 
     #-- seletct current category
     ribbonBar.setCurrentCategory(viewCategory)
