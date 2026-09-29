@@ -36,10 +36,11 @@ proc cmd_texteditor {{tfile "" } } {
 	#wm title $w "[split [split $target_file "."] 0]"
 	wm title $w "To do list"
 	#-----------------------
-	frame $w.mb
-	button $w.mb.btn1 -text "Save" -command {SaveFile}
-	#button $w.mb.btn2 -text "Clear" -command {ClearEdit}
-	button $w.mb.btn3 -text "Exit" -command {QuitFile}
+	#-- ttk 위젯을 써야 현재 ttk 테마(astrodark)의 색을 따른다
+	ttk::frame $w.mb
+	ttk::button $w.mb.btn1 -text "Save" -command {SaveFile}
+	#ttk::button $w.mb.btn2 -text "Clear" -command {ClearEdit}
+	ttk::button $w.mb.btn3 -text "Exit" -command {QuitFile}
 	#
 	pack $w.mb.btn1   -side left  -padx 2m -fill x -expand yes
 	#pack $w.mb.btn2   -side left  -padx 2m -fill x -expand yes
@@ -57,7 +58,8 @@ proc cmd_texteditor {{tfile "" } } {
 	pack $w.te.vscroll -anchor nw  -side right -fill y
 	pack $w.te.edit1 -anchor nw -expand yes -fill both
 	#Now pack everything together
-	pack $w.mb  -anchor nw -pady 2m 
+	#-- 버튼 줄을 먼저 -side bottom 으로 넣어야 창을 줄여도 맨 아래에 남는다
+	pack $w.mb  -side bottom -anchor w -pady 2m
 	pack $w.te  -anchor nw -pady 2m -fill both -expand 1
 	#--------------------------------------------------------
 		$w.te.edit1 insert 1.0 $todolist

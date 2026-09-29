@@ -22,10 +22,14 @@ def Restart():
     interp.eval_tcl('*restart')
 
 def Todolist():
-    interp.eval_tcl('''
-    cd C:/AstroWorks/scripts/_ikjoong
-    source C:/AstroWorks/scripts/_ikjoong/todolist.tcl
-    ''')
+    # _ikjoong/todolist.py 를 누를 때마다 새로 읽는다 (tcl 의 source 처럼 고친 내용이 바로 반영된다)
+    # tcl 판 todolist.tcl 은 그대로 남겨 두었다
+    import importlib.util
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ikjoong", "todolist.py")
+    spec = importlib.util.spec_from_file_location("_ikjoong_todolist", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.cmd_texteditor()
 
 
 def OnTclCmd():
@@ -629,9 +633,17 @@ def CreateRibbon():
 
     # Quick Button 옆 배경(타이틀 줄) Ctrl+우클릭 -> OnTopTabCmd 실행
     # tabBar 의 부모가 Quick Access 툴바와 탭이 들어 있는 타이틀 줄 전체다
+    # 빈 배경에서만 실행한다. 버튼이나 탭처럼 기존 명령이 있는 자리는 건너뛴다
     def OnTitleRowContextMenu(pos):
-        if QApplication.keyboardModifiers() & Qt.ControlModifier:
-            OnTopTabCmd()
+        if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+            return
+        child = titleRow.childAt(pos)
+        if isinstance(child, QtWidgets.QAbstractButton):
+            return
+        tabBar = ribbonBar.tabBar()
+        if child is tabBar and tabBar.tabAt(tabBar.mapFrom(titleRow, pos)) >= 0:
+            return
+        OnTopTabCmd()
 
     titleRow = ribbonBar.tabBar().parentWidget()
     titleRow.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -728,9 +740,18 @@ def CreateRibbon():
 
     # Copilot 버튼이 있는 줄(카테고리 패널 영역) Ctrl+우클릭 -> OnRibbonBarCmd 실행
     # 카테고리의 부모가 모든 카테고리(File1, View)를 담는 패널 줄 전체다
+    # 빈 배경에서만 실행한다. 버튼·입력 위젯처럼 기존 명령이 있는 자리는 건너뛴다
     def OnPanelRowContextMenu(pos):
-        if QApplication.keyboardModifiers() & Qt.ControlModifier:
-            OnRibbonBarCmd()
+        if not (QApplication.keyboardModifiers() & Qt.ControlModifier):
+            return
+        child = panelRow.childAt(pos)
+        while child is not None and child is not panelRow:
+            if isinstance(child, (QtWidgets.QAbstractButton, QtWidgets.QComboBox,
+                                  QtWidgets.QAbstractSpinBox, QtWidgets.QLineEdit,
+                                  QtWidgets.QAbstractSlider, QtWidgets.QAbstractItemView)):
+                return
+            child = child.parentWidget()
+        OnRibbonBarCmd()
 
     panelRow = viewCategory.parentWidget()
     panelRow.setContextMenuPolicy(Qt.CustomContextMenu)
