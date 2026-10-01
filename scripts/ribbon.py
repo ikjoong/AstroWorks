@@ -31,6 +31,11 @@ def Todolist():
     spec.loader.exec_module(module)
     module.cmd_texteditor()
 
+def OnAnimationDemoCmd():
+    # tcl 의 source 처럼 _ikjoong/animation.py 를 누를 때마다 새로 읽어 실행한다 (파일이 cp949)
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ikjoong", "animation.py")
+    exec(open(path, encoding="cp949").read(), {"__name__": "__main__", "__file__": path})
+
 
 def OnTclCmd():
     interp.eval_tcl('''
@@ -617,10 +622,10 @@ def CreateRibbon():
 
     #quick Button
     qbutton = QToolButton()
-    qbutton.setText("Quick Button")
+    qbutton.setText("Animation demo")
     ribbonBar.addQuickAccessButton(qbutton)
-    qbutton.setToolTip("Button 시험")  
-    qbutton.clicked.connect(OnTclCmd)  
+    qbutton.setToolTip("d3plot 데모")  
+    qbutton.clicked.connect(OnAnimationDemoCmd)  
 
 
 
