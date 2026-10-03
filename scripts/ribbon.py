@@ -399,6 +399,19 @@ def GetGrayed(src):
 
 global ribbonBar
 
+# pyqtribbon 은 Collapse Ribbon / Help 버튼을 먼저 붙여 두어서 addRightToolButton 으로 붙이면 그 뒤에 선다
+# 그 앞에 세우려고 Collapse 버튼 자리 앞에 끼워 넣는다. 여러 개를 붙이면 부른 순서대로 늘어선다
+def AddRightToolButtonBeforeCollapse(button):
+    toolBar = ribbonBar.rightToolBar()
+    button.setAutoRaise(True)
+    button.setIconSize(toolBar.iconSize())
+    collapse = ribbonBar.collapseRibbonButton()
+    before = next((a for a in toolBar.actions() if toolBar.widgetForAction(a) is collapse), None)
+    if before is None:
+        toolBar.addWidget(button)
+    else:
+        toolBar.insertWidget(before, button)
+
 # **메뉴 포인터를 들고 있지 않는다.**
 #
 # QMenu 는 부모가 지우면 파이썬 쪽 껍데기만 남는다. 나중에 그걸 만지면
@@ -577,17 +590,43 @@ def CreateRibbon():
 
     # HERE start
     # Right toolbar ----------------------------
+    # Demo
+    qbtn_demo = QToolButton()
+    qbtn_demo.setText("Demo")
+    qbtn_demo.setToolTip("데모 스크립")
+    qbtn_demo.setStyleSheet("QToolButton::menu-indicator { image: none; }")
+    AddRightToolButtonBeforeCollapse(qbtn_demo)
+    fileMenuDemo = QMenu(qbtn_demo)
+    #--
+    actionDemo1 = fileMenuDemo.addAction("Animation")
+    actionDemo1.triggered.connect(OnAnimationDemoCmd)
+    #
+    actionDemo2 = fileMenuDemo.addAction("Save")
+    actionDemo2.triggered.connect(OnSaveFile)
+    #
+    actionDemo3 = fileMenuDemo.addAction("Import")
+    actionDemo3.triggered.connect(OnImportFile)
+    #
+    actionDemo4 = fileMenuDemo.addAction("Export")
+    actionDemo4.triggered.connect(OnExportFile)
+    #
+    actionDemo5 = fileMenuDemo.addAction("Close")
+    actionDemo5.triggered.connect(OnCloseFile)
+    #--
+    qbtn_demo.setMenu(fileMenuDemo)
+    qbtn_demo.setPopupMode(QToolButton.InstantPopup)
+
     # Restart
     rbutton01 = QToolButton()
     rbutton01.setText("Restart")
-    ribbonBar.addRightToolButton(rbutton01)
+    AddRightToolButtonBeforeCollapse(rbutton01)
     rbutton01.setToolTip("종료후 재시작")  
     rbutton01.clicked.connect(Restart)  
 
     # Todolist
     rbutton02 = QToolButton()
     rbutton02.setText("Todolist")
-    ribbonBar.addRightToolButton(rbutton02)
+    AddRightToolButtonBeforeCollapse(rbutton02)
     rbutton02.setToolTip("해야할일 목록")  
     rbutton02.clicked.connect(Todolist)  
 
@@ -620,21 +659,6 @@ def CreateRibbon():
     qbtn_file.setPopupMode(QToolButton.InstantPopup)
 
 
-    #quick Button
-    qbutton = QToolButton()
-    qbutton.setText("Animation demo")
-    ribbonBar.addQuickAccessButton(qbutton)
-    qbutton.setToolTip("d3plot 데모")  
-    qbutton.clicked.connect(OnAnimationDemoCmd)  
-
-
-
-    #quick Button
-    qbutton = QToolButton()
-    qbutton.setText("Quick Button")
-    ribbonBar.addQuickAccessButton(qbutton)
-    qbutton.setToolTip("Button 시험")  
-    qbutton.clicked.connect(OnTclCmd)
 
     # Quick Button 옆 배경(타이틀 줄) Ctrl+우클릭 -> OnTopTabCmd 실행
     # tabBar 의 부모가 Quick Access 툴바와 탭이 들어 있는 타이틀 줄 전체다
