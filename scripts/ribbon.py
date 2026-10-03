@@ -680,7 +680,7 @@ def CreateRibbon():
 
     # HERE end
 
-    homeCategory = ribbonBar.addCategory("File1")
+    homeCategory = ribbonBar.addCategory("Catagory1")
 
     modelPanel = homeCategory.addPanel("Model", showPanelOptionButton=False)
     b=modelPanel.addSmallButton("Open", icon=QIcon(GetIcon("Open_16x")))
@@ -726,7 +726,7 @@ def CreateRibbon():
             b.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
     '''
 
-    viewCategory = ribbonBar.addCategory("View")
+    viewCategory = ribbonBar.addCategory("Catagory2")
 
     consolePanel = viewCategory.addPanel("Console", showPanelOptionButton=False)
     b=consolePanel.addLargeButton("Tcl", icon=QIcon(GetIcon("Tcl")))
