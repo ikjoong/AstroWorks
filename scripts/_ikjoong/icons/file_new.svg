@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>New file icon</title>
+  <path d="M9,9 L20,9 L23,12 L23,27 L9,27 Z" fill="#e8f4ff" stroke="#2a7ed3" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M20,9 L23,12 L20,12 Z" fill="#2a7ed3" opacity="0.4"/>
+  <g transform="translate(18,20) matrix(0.866,-0.5,0.866,0.5,0,0) scale(0.38)">
+    <text x="0" y="0" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="900" fill="#2a7ed3">NEW</text>
+  </g>
+  <polygon points="24,1.5 24.83,4.09 27.57,4.09 25.37,5.72 26.2,8.31 24,6.68 21.8,8.31 22.63,5.72 20.43,4.09 23.17,4.09"
+    fill="#f5c518" stroke="#e6a800" stroke-width="0.5" stroke-linejoin="round"/>
+  <polygon points="7,2.3 7.52,3.97 9.39,3.97 7.94,5.03 8.46,6.7 7,5.64 5.54,6.7 6.06,5.03 4.61,3.97 6.48,3.97"
+    fill="#f5c518" stroke="#e6a800" stroke-width="0.5" stroke-linejoin="round"/>
+  <polygon points="25.5,19 25.88,20.24 27.18,20.24 26.15,21.0 26.53,22.24 25.5,21.48 24.47,22.24 24.85,21.0 23.82,20.24 25.12,20.24"
+    fill="#ffdd55" stroke="#e6a800" stroke-width="0.4" stroke-linejoin="round"/>
+</svg>

@@ -85,6 +85,10 @@ def GetIcon(name):
     if os.path.isfile(path):
         return path
 
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_ikjoong", "icons", name + ".svg")
+    if os.path.isfile(path):
+        return path
+
 # 읽을 수 있는 확장자는 **앱에 물어본다.**
 #
 # 예전에는 이 파일에 손으로 적어 두었다. 그래서 리더를 더해도 파일 대화상자에는
@@ -345,6 +349,13 @@ def OnExportFile():
 
 def OnCloseFile():
     mesh.free()
+
+def CleanCurrentModel():
+    reply = QMessageBox.question(
+        _dialog_parent(), "AstroMesh", "Close current model?",
+        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    if reply == QMessageBox.Yes:
+        OnCloseFile()
 
 def OnToggleTclConsole():
     ui.toggle_tcl_console_visible()
@@ -680,7 +691,31 @@ def CreateRibbon():
 
     # HERE end
 
+    def _add_console_panel(category):
+        consolePanel = category.addPanel("Console", showPanelOptionButton=False)
+        b = consolePanel.addLargeButton("New", icon=QIcon(GetIcon("file_new")))
+        b.clicked.connect(CleanCurrentModel)  # type: ignore
+        b.setIconSize(QSize(16, 16))
+        b.setMaximumIconSize(32)
+
+        b = consolePanel.addLargeButton("Tcl", icon=QIcon(GetIcon("Tcl")))
+        b.clicked.connect(OnToggleTclConsole)  # type: ignore
+        b.setIconSize(QSize(16, 16))
+        b.setMaximumIconSize(32)
+
+        b = consolePanel.addLargeButton("Python", icon=QIcon(GetIcon("python")))
+        b.clicked.connect(OnTogglePythonConsole)  # type: ignore
+        b.setIconSize(QSize(16, 16))
+        b.setMaximumIconSize(32)
+
+        b = consolePanel.addLargeButton("Embed\nPython", icon=QIcon(GetIcon("embedpython")))
+        b.clicked.connect(OnToggleEmbedPythonConsole)  # type: ignore
+        b.setIconSize(QSize(16, 16))
+        b.setMaximumIconSize(16)
+
     homeCategory = ribbonBar.addCategory("Catagory1")
+
+    _add_console_panel(homeCategory)
 
     modelPanel = homeCategory.addPanel("Model", showPanelOptionButton=False)
     b=modelPanel.addSmallButton("Open", icon=QIcon(GetIcon("Open_16x")))
@@ -703,7 +738,7 @@ def CreateRibbon():
     b.setMaximumIconSize(16)
     b.clicked.connect(OnExportFile)  # type: ignore
     #modelPanel.addSeparator().setTopBottomMargins(0,0);
-    
+
     '''
     astro_path = os.environ["ASTRO"]
     pattern = astro_path + "/icons/vs2012/**/*.png"
@@ -728,28 +763,8 @@ def CreateRibbon():
 
     viewCategory = ribbonBar.addCategory("Catagory2")
 
-    consolePanel = viewCategory.addPanel("Console", showPanelOptionButton=False)
-    b=consolePanel.addLargeButton("Tcl", icon=QIcon(GetIcon("Tcl")))
-    b.clicked.connect(OnToggleTclConsole)  # type: ignore
-    b.setIconSize(QSize(16, 16))
-    b.setMaximumIconSize(32)
+    _add_console_panel(viewCategory)
 
-    #b.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    b=consolePanel.addLargeButton("Python", icon=QIcon(GetIcon("python")))
-    b.clicked.connect(OnTogglePythonConsole)  # type: ignore
-    b.setIconSize(QSize(16, 16))
-    b.setMaximumIconSize(32)
-    #b.setFixedWidth(80)
-    #b.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    
-    #b.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    b=consolePanel.addLargeButton("Embed\nPython", icon=QIcon(GetIcon("embedpython")))
-    b.clicked.connect(OnToggleEmbedPythonConsole)  # type: ignore
-    b.setIconSize(QSize(16, 16))
-    b.setMaximumIconSize(16)
-    #b.setFixedWidth(80)
-    #b.setToolButtonStyle(Qt.ToolButtonIconOnly)
-    
     displayPanel = viewCategory.addPanel("Display", showPanelOptionButton=False)
 
     # 아이콘은 모델 브라우저의 Loads 갈래와 같은 것을 쓴다. 같은 것을 켜고
